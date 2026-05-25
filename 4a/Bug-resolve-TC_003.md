@@ -1,18 +1,17 @@
 Developer's name: 22110334
 Fix date: 2026-05-25
 Test case ID: TC_003
-Test description: Kiểm thử trường hợp người dùng xóa rỗng ô "Số thứ nhất" và/hoặc "Số thứ hai" rồi bấm nút "Tính".
+Test description: Kiểm thử trường hợp người dùng xóa rỗng ô "Số thứ nhất" hoặc "Số thứ hai" rồi chuyển focus sang control khác (Tab hoặc Click).
 Cause of the bug:
-`btnTinh_Click` gọi trực tiếp `double.Parse(txtSo1.Text)` và 
-`double.Parse(txtSo2.Text)` mà không kiểm tra chuỗi rỗng trước. Khi ô nhập rỗng, 
-`double.Parse("")` ném `FormatException` không được bắt, gây crash ứng dụng và 
-không có thông điệp nào hướng dẫn người dùng nhập lại.
+`txtSo1` và `txtSo2` không kiểm tra nội dung rỗng khi mất focus. Người dùng 
+có thể để trống một ô số và chuyển sang thao tác khác mà không được nhắc nhở. 
+Chỉ khi bấm "Tính", `double.Parse("")` mới ném `FormatException` và làm 
+chương trình treo, vi phạm yêu cầu đặc tả mục 3: phải thông báo lỗi ngay khi 
+ô mất focus và yêu cầu điều chỉnh.
 How to fix:
-Ở đầu `btnTinh_Click`, kiểm tra `string.IsNullOrWhiteSpace(txtSo1.Text)` và 
-`string.IsNullOrWhiteSpace(txtSo2.Text)`. Nếu một trong hai ô rỗng, hiển thị 
-`MessageBox` cảnh báo cụ thể ("Vui lòng nhập số thứ nhất." hoặc "Vui lòng nhập 
-số thứ hai."), đặt `Focus` về ô đang trống và gọi `SelectAll()` để người dùng 
-có thể gõ lại ngay. Dùng `return;` để dừng việc tính toán. Ngoài ra, thay 
-`double.Parse` bằng `double.TryParse` để phòng vệ thêm cho mọi đầu vào lạ còn 
-sót lại sau bước kiểm tra rỗng.
+Trong handler `txtSo_Leave` (dùng chung với TC_002), kiểm tra 
+`string.IsNullOrWhiteSpace(tb.Text)` trước khi parse. Nếu ô đang trống, hiển 
+thị `MessageBox` ("Vui lòng nhập số thứ nhất." hoặc "Vui lòng nhập số thứ hai."), 
+gọi `Focus()` và `SelectAll()` để người dùng nhập lại ngay tại ô đó. Không cho 
+phép thực hiện thao tác khác cho đến khi ô được điền hợp lệ.
 Note: Không

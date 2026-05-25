@@ -35,44 +35,13 @@ namespace Buoi07_TinhToan3
 
         private void btnTinh_Click(object sender, EventArgs e)
         {
-            // TC_003: Kiểm tra ô nhập rỗng trước khi tính toán
-            if (string.IsNullOrWhiteSpace(txtSo1.Text))
-            {
-                MessageBox.Show("Vui lòng nhập số thứ nhất.",
-                                "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtSo1.Focus();
-                txtSo1.SelectAll();
-                return;
-            }
-            if (string.IsNullOrWhiteSpace(txtSo2.Text))
-            {
-                MessageBox.Show("Vui lòng nhập số thứ hai.",
-                                "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtSo2.Focus();
-                txtSo2.SelectAll();
-                return;
-            }
-
-            // Dùng TryParse để tránh ngoại lệ khi dữ liệu không hợp lệ
             double so1, so2, kq = 0;
             if (!double.TryParse(txtSo1.Text, NumberStyles.Float,
                                  CultureInfo.CurrentCulture, out so1))
-            {
-                MessageBox.Show("Số thứ nhất không hợp lệ.",
-                                "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtSo1.Focus();
-                txtSo1.SelectAll();
                 return;
-            }
             if (!double.TryParse(txtSo2.Text, NumberStyles.Float,
                                  CultureInfo.CurrentCulture, out so2))
-            {
-                MessageBox.Show("Số thứ hai không hợp lệ.",
-                                "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtSo2.Focus();
-                txtSo2.SelectAll();
                 return;
-            }
 
             // TC_001: Không cho phép chia cho 0
             if (radChia.Checked && so2 == 0)
@@ -93,38 +62,32 @@ namespace Buoi07_TinhToan3
             txtKq.Text = kq.ToString();
         }
 
-        // TC_002: Chỉ cho phép nhập ký tự số, dấu trừ đứng đầu và một dấu thập phân
-        private void txtSo_KeyPress(object sender, KeyPressEventArgs e)
+        // TC_002 + TC_003: Kiểm tra rỗng và ký tự lạ khi ô số mất focus
+        private void txtSo_Leave(object sender, EventArgs e)
         {
             TextBox tb = sender as TextBox;
             if (tb == null) return;
 
-            char c = e.KeyChar;
-            if (char.IsControl(c)) return;            // cho phép Backspace, Ctrl+...
-            if (char.IsDigit(c)) return;
+            bool isSo1 = tb == txtSo1;
 
-            string decSep = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
-            if (c.ToString() == decSep && !tb.Text.Contains(decSep)) return;
-
-            if (c == '-' && tb.SelectionStart == 0 && !tb.Text.Contains("-")) return;
-
-            e.Handled = true;
-        }
-
-        // TC_002 + TC_004: Vô hiệu hóa nút Tính khi dữ liệu không hợp lệ,
-        // đồng thời xóa kết quả cũ khi người dùng chỉnh sửa số nhập.
-        private void txtSo_TextChanged(object sender, EventArgs e)
-        {
-            txtKq.Text = string.Empty;
+            if (string.IsNullOrWhiteSpace(tb.Text))
+            {
+                MessageBox.Show(isSo1 ? "Vui lòng nhập số thứ nhất." : "Vui lòng nhập số thứ hai.",
+                                "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                tb.Focus();
+                tb.SelectAll();
+                return;
+            }
 
             double tmp;
-            bool ok1 = !string.IsNullOrWhiteSpace(txtSo1.Text)
-                       && double.TryParse(txtSo1.Text, NumberStyles.Float,
-                                          CultureInfo.CurrentCulture, out tmp);
-            bool ok2 = !string.IsNullOrWhiteSpace(txtSo2.Text)
-                       && double.TryParse(txtSo2.Text, NumberStyles.Float,
-                                          CultureInfo.CurrentCulture, out tmp);
-            btnTinh.Enabled = ok1 && ok2;
+            if (!double.TryParse(tb.Text, NumberStyles.Float,
+                                 CultureInfo.CurrentCulture, out tmp))
+            {
+                MessageBox.Show(isSo1 ? "Số thứ nhất không hợp lệ." : "Số thứ hai không hợp lệ.",
+                                "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                tb.Focus();
+                tb.SelectAll();
+            }
         }
 
         // TC_005: Khi focus vào ô số, tự chọn toàn bộ nội dung để dễ chỉnh sửa
