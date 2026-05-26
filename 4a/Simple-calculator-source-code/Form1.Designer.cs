@@ -106,7 +106,7 @@
             this.txtSo2.TabIndex = 13;
             this.txtSo2.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtSo2.Enter += new System.EventHandler(this.txtSo_Enter);
-            this.txtSo2.Leave += new System.EventHandler(this.txtSo_Leave);
+            this.txtSo2.Validating += new System.ComponentModel.CancelEventHandler(this.txtSo_Validating);
             // 
             // label2
             // 
@@ -127,7 +127,7 @@
             this.txtSo1.TabIndex = 11;
             this.txtSo1.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             this.txtSo1.Enter += new System.EventHandler(this.txtSo_Enter);
-            this.txtSo1.Leave += new System.EventHandler(this.txtSo_Leave);
+            this.txtSo1.Validating += new System.ComponentModel.CancelEventHandler(this.txtSo_Validating);
             // 
             // label1
             // 

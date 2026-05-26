@@ -43,7 +43,7 @@ namespace Buoi07_TinhToan3
                                  CultureInfo.CurrentCulture, out so2))
                 return;
 
-            // TC_001: Không cho phép chia cho 0
+            // TC_006: Không cho phép chia cho 0
             if (radChia.Checked && so2 == 0)
             {
                 MessageBox.Show("Không thể chia cho 0. Vui lòng nhập lại số thứ hai.",
@@ -62,8 +62,8 @@ namespace Buoi07_TinhToan3
             txtKq.Text = kq.ToString();
         }
 
-        // TC_002 + TC_003: Kiểm tra rỗng và ký tự lạ khi ô số mất focus
-        private void txtSo_Leave(object sender, EventArgs e)
+        // TC_010A + TC_010B: Kiểm tra rỗng và ký tự lạ khi ô số mất focus (Validating)
+        private void txtSo_Validating(object sender, CancelEventArgs e)
         {
             TextBox tb = sender as TextBox;
             if (tb == null) return;
@@ -74,7 +74,7 @@ namespace Buoi07_TinhToan3
             {
                 MessageBox.Show(isSo1 ? "Vui lòng nhập số thứ nhất." : "Vui lòng nhập số thứ hai.",
                                 "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                tb.Focus();
+                e.Cancel = true;
                 tb.SelectAll();
                 return;
             }
@@ -85,12 +85,12 @@ namespace Buoi07_TinhToan3
             {
                 MessageBox.Show(isSo1 ? "Số thứ nhất không hợp lệ." : "Số thứ hai không hợp lệ.",
                                 "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                tb.Focus();
+                e.Cancel = true;
                 tb.SelectAll();
             }
         }
 
-        // TC_005: Khi focus vào ô số, tự chọn toàn bộ nội dung để dễ chỉnh sửa
+        // TC_017A + TC_017B: Khi focus vào ô số, tự chọn toàn bộ nội dung để dễ chỉnh sửa
         private void txtSo_Enter(object sender, EventArgs e)
         {
             TextBox tb = sender as TextBox;
